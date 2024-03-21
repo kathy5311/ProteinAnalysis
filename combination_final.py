@@ -340,22 +340,7 @@ def process_pdb(file_path):
     data.close()
     return new_atom
 
-def sequenc_func(new_atom):
-    for ch in new_atom:
-        new_string=""
-        ordered_dict=OrderedDict(new_atom[ch])
-        for key,value in ordered_dict.items():
-            new_string+=value[1]
-    
-        print(ch)
-        print(new_string)
-        print()
-
-def save_result(result, filename):
-    npz_filename = filename[:-4] + ".npz"  # .pdb 확장자를 .npz 확장자로 바꿉니다.
-    np.savez(npz_filename, result=result)
-    print(f"Result saved as {npz_filename}")
-       
+        
 #Execution part
 exception_file=[]
 error_list=[]
@@ -364,16 +349,32 @@ for filename in os.listdir(data_directory):
     if filename.endswith(".pdb"):
         file_path = os.path.join(data_directory, filename)
         try:
-            
             final=process_pdb(file_path)
-            save_result(final,filename)
             print(filename)
-            print(final)
-            sequenc_func(final)
+            for ch in final:
+                SS_list=[]
+                total_string=""
+                ordered_dict=OrderedDict(final[ch])
+                for key,value in ordered_dict.items():
+                    SS_list.append(value[0])
+                    SS_narray=np.array(SS_list, dtype=object)
+                    total_string+=value[1]
+                npz_filename=filename[:-4]+"_"+ch+".npz"
+                np.savez(npz_filename, SS=SS_narray, sequence=total_string)
+                print(npz_filename)
+                print(SS_narray)
+                print(total_string)
+                print()
             
         except Exception as e:
             exception_file.append(filename)
             if e not in error_list:
                 error_list.append([e,filename])
-
-
+            
+            print(filename)
+            print(e)
+            print()
+print()
+#print(exception_file)
+print(len(exception_file))
+print(error_list)
