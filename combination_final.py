@@ -353,17 +353,21 @@ for filename in os.listdir(data_directory):
             print(filename)
             for ch in final:
                 SS_list=[]
-                total_string=""
+                seq_list=[]
+                #total_string=""
                 ordered_dict=OrderedDict(final[ch])
                 for key,value in ordered_dict.items():
                     SS_list.append(value[0])
                     SS_narray=np.array(SS_list, dtype=object)
-                    total_string+=value[1]
+                    #total_string+=value[1]
+                    seq_list.append(value[1])
+                    seq_narray=np.array(seq_list,dtype=object)
                 npz_filename=filename[:-4]+"_"+ch+".npz"
-                np.savez(npz_filename, SS=SS_narray, sequence=total_string)
+                np.savez(npz_filename, SS=SS_narray, sequence=seq_narray)
                 print(npz_filename)
                 print(SS_narray)
-                print(total_string)
+                print(seq_narray)
+                #print(total_string)
                 print()
             
         except Exception as e:
